@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile").permitAll()
-                        .requestMatchers("/api/v1/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/api/v1/**").hasRole(Role.USER.name()) // 🔄 수정 포인트
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/"))
@@ -31,8 +31,10 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
+                        .defaultSuccessUrl("/", true) // ✅ 이 줄 추가
                 );
 
         return http.build();
     }
+
 }
